@@ -92,12 +92,43 @@ function AnimCounter({ target, suffix, duration = 2000 }: { target: number; suff
   )
 }
 
+const NEWS_TICKER = [
+  '📈 Theydon Bois: Average prices up 5.1% year-on-year — now £725,000',
+  '🏠 JUST LISTED: 4 bed detached in Chigwell, £895,000 — call for viewings',
+  '📊 Epping Forest district sees highest demand since 2021',
+  '🔑 SOLD: 3 bed semi in Buckhurst Hill — achieved above asking price',
+  '📰 Bank of England holds rates — mortgage applications up 12% this month',
+  '🏡 Chigwell named one of Essex\'s most desirable postcodes for 2026',
+  '📈 Loughton: New build completions drive 8% increase in local transactions',
+  '🔑 JUST LET: Luxury 2 bed apartment, Theydon Bois — let within 48 hours',
+]
+
+const SERVICE_DETAILS: Record<string, string> = {
+  'Residential Sales': 'From valuation to completion, we manage the entire sales process. Our local expertise and proactive approach means we achieve the best possible price for your property, with an average of 98% of asking price achieved.',
+  'Lettings': 'Full lettings management including tenant finding, referencing, inventory, and ongoing property management. We handle everything so you don\'t have to — from marketing to move-in day.',
+  'New Homes': 'Working with developers across East London and Essex to market and sell new build properties. We provide full sales and marketing packages tailored to each development.',
+  'Property Valuations': 'Free, no-obligation market appraisals from our local experts. We use comparable sales data, current market conditions, and our in-depth local knowledge to give you an accurate valuation.',
+  'Professional Photography': 'HDR photography, drone footage, and virtual tours that showcase your property at its absolute best. First impressions matter — we make sure yours is stunning.',
+  'Floor Plans': 'Detailed, professionally drawn floor plans that give buyers a clear understanding of your property\'s layout and proportions. Essential for online listings.',
+  'Market Appraisals': 'Comprehensive market analysis including comparable sales, local trends, and pricing strategy. We give you the data to make informed decisions about your property.',
+  'Property Management': 'Full property management for landlords — from rent collection to maintenance coordination. We treat your investment as if it were our own.',
+  'Tenant Referencing': 'Thorough tenant screening including credit checks, employment verification, previous landlord references, and right-to-rent checks. Peace of mind guaranteed.',
+  'Compliance & Safety': 'We ensure your property meets all legal requirements — gas safety, electrical inspections, EPC ratings, and fire safety regulations. Full compliance management.',
+  'EPC Certificates': 'Energy Performance Certificates arranged and managed. We work with accredited assessors to ensure your property is compliant and energy-rated.',
+  'Investment Advice': 'Expert guidance on property investment, portfolio building, and yield optimisation across East London and Essex. Data-driven advice for serious investors.',
+  'Relocation Services': 'Moving to the area? We help with school catchments, transport links, local amenities, and finding the perfect neighbourhood for your lifestyle.',
+  'Out-of-Hours Viewings': 'We understand busy schedules. Evening and weekend viewings available as standard — we work around your life, not the other way around.',
+  'Refurbishment Advice': 'Expert guidance on which improvements add the most value to your property. From quick cosmetic fixes to full renovation projects — we know what buyers want.',
+  'Block Management': 'Comprehensive block management services for freeholders and resident management companies. Maintenance, budgets, insurance, and compliance — all handled.',
+}
+
 /* ─── Main ─── */
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchType, setSearchType] = useState<'buy' | 'rent'>('buy')
   const [testimonialIdx, setTestimonialIdx] = useState(0)
   const [scrollY, setScrollY] = useState(0)
+  const [serviceModal, setServiceModal] = useState<string | null>(null)
 
   useEffect(() => {
     const handler = () => setScrollY(window.scrollY)
@@ -114,8 +145,23 @@ export default function HomePage() {
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
 
+      {/* ═══ NEWS TICKER ═══ */}
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-navy border-b border-white/10 overflow-hidden" style={{ height: 32 }}>
+        <div className="flex items-center h-full animate-ticker whitespace-nowrap">
+          {[...NEWS_TICKER, ...NEWS_TICKER].map((item, i) => (
+            <span key={i} className="inline-block px-8 text-xs font-medium text-white/60">
+              {item}
+            </span>
+          ))}
+        </div>
+        <style>{`
+          @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+          .animate-ticker { animation: tickerScroll 40s linear infinite; }
+        `}</style>
+      </div>
+
       {/* ═══ NAV ═══ */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-navy/98 shadow-2xl' : 'bg-navy/90'} backdrop-blur-xl border-b border-white/5`}>
+      <nav className={`fixed left-0 right-0 z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-navy/98 shadow-2xl' : 'bg-navy/90'} backdrop-blur-xl border-b border-white/5`} style={{ top: 32 }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
             <span className="text-white text-2xl font-bold tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -146,13 +192,20 @@ export default function HomePage() {
         )}
       </nav>
 
-      {/* ═══ HERO — Parallax ═══ */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Parallax background */}
-        <div className="absolute inset-0" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
-          <div className="absolute inset-0 bg-cover bg-center scale-110" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80)' }} />
+      {/* ═══ HERO — Video Background ═══ */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden" style={{ marginTop: 32 }}>
+        {/* Video background */}
+        <div className="absolute inset-0">
+          <video
+            autoPlay muted loop playsInline
+            className="absolute inset-0 w-full h-full object-cover scale-105"
+            poster="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80"
+          >
+            <source src="https://videos.pexels.com/video-files/7578550/7578550-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+          </video>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/90 via-navy/80 to-navy" />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-navy/85 via-navy/75 to-navy" />
         
         {/* Dot pattern overlay */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
@@ -296,9 +349,10 @@ export default function HomePage() {
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {SERVICES.map((s, i) => (
-              <div key={i} className="group flex items-center gap-2.5 bg-white/5 hover:bg-pink/20 border border-white/10 hover:border-pink/30 rounded-full px-5 py-3 text-sm font-medium text-white/70 hover:text-white transition-all duration-300 cursor-pointer backdrop-blur-sm">
+              <div key={i} onClick={() => setServiceModal(s.label)} className="group flex items-center gap-2.5 bg-white/5 hover:bg-pink/20 border border-white/10 hover:border-pink/30 rounded-full px-5 py-3 text-sm font-medium text-white/70 hover:text-white transition-all duration-300 cursor-pointer backdrop-blur-sm">
                 <s.icon size={16} className="text-pink group-hover:scale-110 transition-transform" />
                 {s.label}
+                <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-pink" />
               </div>
             ))}
           </div>
@@ -318,7 +372,7 @@ export default function HomePage() {
               <div key={a.name} className="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-500 hover:-translate-y-1 cursor-pointer border border-gray-100 relative overflow-hidden">
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-pink to-pink/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                 <div className="text-navy font-bold text-sm uppercase tracking-wider">{a.name}</div>
-                <div className="text-3xl font-bold text-navy mt-2" style={{ fontFamily: "'Playfair Display', serif" }}>{a.avg}</div>
+                <div className="text-3xl font-bold text-navy mt-2" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: '-0.02em' }}>{a.avg}</div>
                 <div className="inline-flex items-center gap-1 bg-green-50 text-green-600 text-xs font-bold px-2.5 py-1 rounded-full mt-3">
                   <TrendingUp size={12} /> {a.yoy} YoY
                 </div>
@@ -493,6 +547,36 @@ export default function HomePage() {
           <Home size={16} /> Free Valuation
         </button>
       </div>
+
+      {/* ═══ SERVICE MODAL ═══ */}
+      {serviceModal && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" onClick={() => setServiceModal(null)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="relative bg-white rounded-2xl p-8 max-w-lg w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setServiceModal(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+              <X size={20} />
+            </button>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-pink/10 rounded-xl flex items-center justify-center">
+                {(() => {
+                  const svc = SERVICES.find(s => s.label === serviceModal)
+                  return svc ? <svc.icon className="text-pink" size={22} /> : null
+                })()}
+              </div>
+              <h3 className="text-xl font-bold text-navy" style={{ fontFamily: "'Playfair Display', serif" }}>{serviceModal}</h3>
+            </div>
+            <p className="text-gray-600 leading-relaxed">{SERVICE_DETAILS[serviceModal] || 'Contact us to learn more about this service.'}</p>
+            <div className="mt-6 flex gap-3">
+              <a href="tel:02089816611" className="flex-1 bg-pink hover:bg-pink/90 text-white py-3 rounded-xl font-semibold text-center flex items-center justify-center gap-2 text-sm transition-colors">
+                <Phone size={14} /> Call to Discuss
+              </a>
+              <a href="mailto:info@butlerandstag.uk" className="flex-1 bg-gray-100 hover:bg-gray-200 text-navy py-3 rounded-xl font-semibold text-center flex items-center justify-center gap-2 text-sm transition-colors">
+                <Mail size={14} /> Email Us
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
