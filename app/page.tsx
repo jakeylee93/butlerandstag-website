@@ -47,9 +47,10 @@ const TESTIMONIALS = [
 ]
 
 const PROPERTIES = [
-  { price: '£525,000', beds: 3, type: 'Semi-Detached House', area: 'Chingford', img: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80', tag: 'Just Listed' },
-  { price: '£385,000', beds: 2, type: 'Victorian Terrace', area: 'Bow', img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&q=80', tag: 'Price Reduced' },
-  { price: '£750,000', beds: 4, type: 'Detached Family Home', area: 'Theydon Bois', img: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80', tag: 'Featured' },
+  { id: 'westbury-lane', price: '£1,285,000', beds: 5, baths: 2, receptions: 2, type: 'Semi-Detached House', area: 'Buckhurst Hill, IG9', address: 'Westbury Lane, Buckhurst Hill', img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', tag: 'Featured', desc: 'Stunning 5 bedroom semi-detached with extended vaulted kitchen/dining, exposed brickwork, south-facing 80ft garden, and driveway parking for 4. Steps from Buckhurst Hill Tube.' },
+  { id: 'redmans-road', price: '£500,000', beds: 2, baths: 2, receptions: 1, type: 'Apartment', area: 'Whitechapel, E1', address: 'Redmans Road, Whitechapel', img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80', tag: 'Just Listed', desc: 'Modern 2 bedroom apartment in the heart of Whitechapel. Contemporary finish throughout with two bathrooms. Excellent transport links.' },
+  { id: 'fairfield-road', price: '£325,000', beds: 1, baths: 1, receptions: 1, type: 'Apartment', area: 'Bow, E3', address: 'Fairfield Road, Bow', img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80', tag: 'Price Guide', desc: 'Charming 1 bedroom apartment in popular Bow location. Bright and spacious with excellent local amenities and transport connections.' },
+  { id: 'bermuda-way', price: '£300,000', beds: 1, baths: 1, receptions: 1, type: 'Apartment', area: 'London, E1', address: 'Bermuda Way, London', img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80', tag: 'New', desc: 'Well-presented 1 bedroom apartment in E1. Ideal first-time buy or investment property with strong rental demand.' },
 ]
 
 const STATS = [
@@ -93,14 +94,14 @@ function AnimCounter({ target, suffix, duration = 2000 }: { target: number; suff
 }
 
 const NEWS_TICKER = [
-  '📈 Theydon Bois: Average prices up 5.1% year-on-year — now £725,000',
-  '🏠 JUST LISTED: 4 bed detached in Chigwell, £895,000 — call for viewings',
-  '📊 Epping Forest district sees highest demand since 2021',
-  '🔑 SOLD: 3 bed semi in Buckhurst Hill — achieved above asking price',
-  '📰 Bank of England holds rates — mortgage applications up 12% this month',
-  '🏡 Chigwell named one of Essex\'s most desirable postcodes for 2026',
-  '📈 Loughton: New build completions drive 8% increase in local transactions',
-  '🔑 JUST LET: Luxury 2 bed apartment, Theydon Bois — let within 48 hours',
+  'THEYDON BOIS — Average prices up 5.1% year-on-year, now £725,000',
+  'JUST LISTED — 5 bed semi-detached, Westbury Lane, Buckhurst Hill, £1,285,000',
+  'EPPING FOREST — District sees highest buyer demand since 2021',
+  'SOLD STC — 3 bed semi, Chingford, achieved above asking price in 10 days',
+  'MARKET UPDATE — Bank of England holds rates, mortgage applications up 12%',
+  'CHIGWELL — Named one of Essex\'s most desirable postcodes for 2026',
+  'JUST LET — Luxury 2 bed apartment, Theydon Bois, let within 48 hours',
+  'BOW — New instruction: 1 bed apartment, Fairfield Road, Price Guide £325,000',
 ]
 
 const SERVICE_DETAILS: Record<string, string> = {
@@ -129,6 +130,7 @@ export default function HomePage() {
   const [testimonialIdx, setTestimonialIdx] = useState(0)
   const [scrollY, setScrollY] = useState(0)
   const [serviceModal, setServiceModal] = useState<string | null>(null)
+  const [propertyModal, setPropertyModal] = useState<typeof PROPERTIES[0] | null>(null)
 
   useEffect(() => {
     const handler = () => setScrollY(window.scrollY)
@@ -146,17 +148,19 @@ export default function HomePage() {
     <div className="min-h-screen overflow-x-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
 
       {/* ═══ NEWS TICKER ═══ */}
-      <div className="fixed top-0 left-0 right-0 z-[60] bg-navy border-b border-white/10 overflow-hidden" style={{ height: 32 }}>
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-navy via-[#0f2440] to-navy border-b border-pink/20 overflow-hidden" style={{ height: 34 }}>
         <div className="flex items-center h-full animate-ticker whitespace-nowrap">
           {[...NEWS_TICKER, ...NEWS_TICKER].map((item, i) => (
-            <span key={i} className="inline-block px-8 text-xs font-medium text-white/60">
-              {item}
+            <span key={i} className="inline-flex items-center gap-3 px-6 text-xs tracking-wide" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <span className="text-pink font-bold">●</span>
+              <span className="text-white/70 font-medium">{item}</span>
             </span>
           ))}
         </div>
         <style>{`
           @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-          .animate-ticker { animation: tickerScroll 40s linear infinite; }
+          .animate-ticker { animation: tickerScroll 45s linear infinite; }
+          .animate-ticker:hover { animation-play-state: paused; }
         `}</style>
       </div>
 
@@ -261,24 +265,26 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid md:grid-cols-3 gap-5">
             {PROPERTIES.map((p, i) => (
-              <div key={i} className="group bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer ring-1 ring-black/5">
+              <div key={i} onClick={() => setPropertyModal(p)} className="group bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer ring-1 ring-black/5">
                 <div className="relative h-56 overflow-hidden">
                   <img src={p.img} alt={p.type} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  {/* Tag */}
                   <div className="absolute top-3 left-3 bg-pink text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">{p.tag}</div>
-                  {/* Price overlay */}
                   <div className="absolute bottom-3 left-4">
                     <div className="text-white text-2xl font-bold" style={{ fontFamily: "'Playfair Display', serif", textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>{p.price}</div>
                   </div>
-                  {/* Heart */}
                   <button className="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white/40">
                     <Heart size={14} className="text-white" />
                   </button>
                 </div>
                 <div className="p-4">
-                  <div className="text-gray-800 font-semibold">{p.beds} bed {p.type}</div>
-                  <div className="flex items-center gap-1 text-gray-400 text-sm mt-1"><MapPin size={13} /> {p.area}</div>
+                  <div className="text-gray-800 font-semibold">{p.address}</div>
+                  <div className="text-gray-500 text-sm mt-1">{p.beds} bed {p.type}</div>
+                  <div className="flex items-center gap-3 text-gray-400 text-xs mt-2">
+                    <span>{p.beds} 🛏️</span>
+                    <span>{p.baths} 🚿</span>
+                    <span>{p.receptions} 🛋️</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -547,6 +553,72 @@ export default function HomePage() {
           <Home size={16} /> Free Valuation
         </button>
       </div>
+
+      {/* ═══ PROPERTY MODAL ═══ */}
+      {propertyModal && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" onClick={() => setPropertyModal(null)}>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div className="relative bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setPropertyModal(null)} className="absolute top-4 right-4 z-10 w-8 h-8 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/50 transition-colors">
+              <X size={16} />
+            </button>
+            {/* Hero image */}
+            <div className="relative h-64 md:h-80 overflow-hidden">
+              <img src={propertyModal.img} alt={propertyModal.address} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-6">
+                <div className="bg-pink text-white text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">{propertyModal.tag}</div>
+                <div className="text-white text-3xl font-bold" style={{ fontFamily: "'Playfair Display', serif", textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>{propertyModal.price}</div>
+              </div>
+            </div>
+            {/* Content */}
+            <div className="p-6 md:p-8">
+              <h2 className="text-xl font-bold text-navy mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{propertyModal.address}</h2>
+              <div className="text-gray-500 text-sm mb-4">{propertyModal.area}</div>
+              
+              {/* Stats */}
+              <div className="flex gap-4 mb-6">
+                <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-bold text-navy">{propertyModal.beds}</div>
+                  <div className="text-xs text-gray-400 font-medium">Bedrooms</div>
+                </div>
+                <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-bold text-navy">{propertyModal.baths}</div>
+                  <div className="text-xs text-gray-400 font-medium">Bathrooms</div>
+                </div>
+                <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-bold text-navy">{propertyModal.receptions}</div>
+                  <div className="text-xs text-gray-400 font-medium">Receptions</div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <h3 className="font-bold text-navy mb-2">Property Description</h3>
+              <p className="text-gray-600 leading-relaxed text-sm mb-6">{propertyModal.desc}</p>
+
+              {/* Key features */}
+              <h3 className="font-bold text-navy mb-2">Key Features</h3>
+              <div className="grid grid-cols-2 gap-2 mb-6">
+                {[`${propertyModal.beds} bedrooms`, `${propertyModal.baths} bathrooms`, `${propertyModal.receptions} reception rooms`, propertyModal.type, 'EPC rating available', 'Chain details on request'].map((f, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                    <span className="text-pink">✓</span> {f}
+                  </div>
+                ))}
+              </div>
+
+              {/* CTAs */}
+              <div className="flex gap-3">
+                <a href="tel:02089816611" className="flex-1 bg-pink hover:bg-pink/90 text-white py-3.5 rounded-xl font-semibold text-center flex items-center justify-center gap-2 text-sm transition-colors">
+                  <Phone size={14} /> Book Viewing
+                </a>
+                <a href="mailto:info@butlerandstag.uk" className="flex-1 bg-navy hover:bg-navy/90 text-white py-3.5 rounded-xl font-semibold text-center flex items-center justify-center gap-2 text-sm transition-colors">
+                  <Mail size={14} /> Enquire
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ═══ SERVICE MODAL ═══ */}
       {serviceModal && (
